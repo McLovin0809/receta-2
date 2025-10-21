@@ -186,6 +186,7 @@ fun HomeScreen(
             }
         }
     }
+
     @Composable
     fun HomeScreen(viewModel: MainViewModel, onItemClick: (Int) -> Unit) {
         val items = viewModel.items.collectAsState()
@@ -199,6 +200,11 @@ fun HomeScreen(
                 }
             }
         }
+    }
+
+    @Composable
+    fun ItemRow(item: Item, onClick: () -> Unit) {
+        TODO("Not yet implemented")
     }
 
     @Composable

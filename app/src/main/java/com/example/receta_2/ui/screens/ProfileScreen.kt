@@ -5,62 +5,45 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.example.receta_2.navigation.BottomBar
-import com.example.receta_2.navigation.BottomNavItem
-import com.example.receta_2.navigation.Routes
-import com.example.receta_2.ui.viewmodel.MainViewModel
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    onSettingsClick: () -> Unit,
+    onLogoutClick: () -> Unit
+) {
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Perfil") }) }
+        topBar = {
+            TopAppBar(title = { Text("Mi Perfil") })
+        }
     ) { padding ->
-        Box(
+        Column(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(padding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Pantalla de perfil")
-        }
-    }
-}
-@Composable
-fun App() {
-    val navController = rememberNavController()
-    val bottomItems = listOf(BottomNavItem.Home, BottomNavItem.Profile)
+            Text(
+                text = "Información del Usuario",
+                style = MaterialTheme.typography.titleLarge
+            )
 
-    Scaffold(
-        bottomBar = { BottomBar(navController, bottomItems) }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Routes.HOME,
-            modifier = androidx.compose.ui.Modifier.padding(innerPadding)
-        ) {
-            composable(Routes.HOME) {
-                val vm: MainViewModel = viewModel()
-                HomeScreen(viewModel = vm, onItemClick = { id ->
-                    navController.navigate(Routes.detailRoute(id))
-                })
+            // Puedes añadir más información del perfil aquí
+
+            Button(onClick = onSettingsClick, modifier = Modifier.fillMaxWidth()) {
+                Text("Configuración")
             }
-            composable(Routes.PROFILE) { ProfileScreen() }
-            composable(
-                route = Routes.DETAIL,
-                arguments = listOf(navArgument("itemId") { type = NavType.IntType })
-            ) { backStackEntry ->
-                val vm: MainViewModel = viewModel()
-                val id = backStackEntry.arguments?.getInt("itemId") ?: -1
-                DetailScreen(itemId = id, viewModel = vm, onBack = { navController.popBackStack() })
+
+            Button(
+                onClick = onLogoutClick,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+            ) {
+                Text("Cerrar Sesión")
             }
         }
     }
 }
-

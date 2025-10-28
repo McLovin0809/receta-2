@@ -8,7 +8,7 @@ import com.example.receta_2.data.model.Recipe
 import com.example.receta_2.data.model.SearchCategory
 import com.example.receta_2.data.model.allCategories // Importa los datos iniciales
 import com.example.receta_2.data.model.sampleRecipes   // Importa los datos iniciales
-import com.example.receta_2.data.repository.RecipeRepository
+import com.example.receta_2.repository.RecipeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

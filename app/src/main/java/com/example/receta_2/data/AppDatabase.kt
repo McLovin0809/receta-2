@@ -1,4 +1,3 @@
-// En: com/example/receta_2/data/AppDatabase.kt
 package com.example.receta_2.data
 
 import android.content.Context
@@ -27,7 +26,6 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        // MODIFICACIÓN 1: Ahora aceptamos las listas de datos iniciales aquí
         fun getDatabase(
             context: Context,
             initialRecipes: List<Recipe>,
@@ -39,7 +37,6 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "recipe_app_database"
                 )
-                    // MODIFICACIÓN 2: Pasamos las listas al Callback
                     .addCallback(DatabaseCallback(initialRecipes, initialCategories))
                     .build()
                 INSTANCE = instance
@@ -48,7 +45,6 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 
-    // MODIFICACIÓN 3: El Callback ahora recibe los datos en su constructor
     private class DatabaseCallback(
         private val initialRecipes: List<Recipe>,
         private val initialCategories: List<SearchCategory>
@@ -63,7 +59,6 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         suspend fun populateDatabase(recipeDao: RecipeDao) {
-            // MODIFICACIÓN 4: Usamos las listas recibidas en el constructor
             val categoryEntities = initialCategories.map { category ->
                 CategoryEntity(category.id, category.name, category.image, category.recipeCount, category.group)
             }

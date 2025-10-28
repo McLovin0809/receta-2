@@ -19,8 +19,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.receta_2.data.model.Recipe
 
-// --- ✅ COMPONENTE REUTILIZABLE EN SU PROPIO ARCHIVO ---
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeItemCard(

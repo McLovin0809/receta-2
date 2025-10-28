@@ -1,14 +1,11 @@
 package com.example.receta_2.ui.screens
 
-import android.util.Patterns
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -21,10 +18,17 @@ fun LoginScreen(
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var isEmailValid by remember { mutableStateOf(true) }
 
-    // Validación simple: campos no vacíos y email con formato correcto
-    val isFormValid = email.isNotBlank() && password.isNotBlank() && isEmailValid
+    var isEmailValid by remember { mutableStateOf(true) }
+    var isPasswordValid by remember { mutableStateOf(true) }
+
+    // Regex personalizada para validar correo electrónico
+    val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
+
+    // Regex para contraseña segura: mínimo 8 caracteres, al menos una letra y un número
+    val passwordRegex = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@#\$%^&+=!]{8,}$")
+
+    val isFormValid = email.isNotBlank() && password.isNotBlank() && isEmailValid && isPasswordValid
 
     Column(
         modifier = Modifier
@@ -36,11 +40,12 @@ fun LoginScreen(
         Text("Iniciar Sesión", style = MaterialTheme.typography.headlineLarge)
         Spacer(Modifier.height(32.dp))
 
+        // Campo de correo electrónico
         OutlinedTextField(
             value = email,
             onValueChange = {
                 email = it
-                isEmailValid = Patterns.EMAIL_ADDRESS.matcher(it).matches()
+                isEmailValid = emailRegex.matches(it)
             },
             label = { Text("Correo Electrónico") },
             leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
@@ -49,29 +54,51 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth()
         )
         if (!isEmailValid && email.isNotEmpty()) {
-            Text("Introduce un correo válido", color = MaterialTheme.colorScheme.error)
+            Text(
+                "Correo inválido. Usa un formato como usuario@dominio.cl",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
         }
+
         Spacer(Modifier.height(16.dp))
 
+        // Campo de contraseña
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                isPasswordValid = passwordRegex.matches(it)
+            },
             label = { Text("Contraseña") },
             leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
             visualTransformation = PasswordVisualTransformation(),
+            isError = !isPasswordValid && password.isNotEmpty(),
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
+        if (!isPasswordValid && password.isNotEmpty()) {
+            Text(
+                "Debe tener al menos 8 caracteres, incluir letras y números.",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+
         Spacer(Modifier.height(32.dp))
 
+        // Botón de login
         Button(
             onClick = onLoginSuccess,
-            enabled = isFormValid, // El botón se activa solo si el formulario es válido
+            enabled = isFormValid,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Entrar")
         }
+
         Spacer(Modifier.height(16.dp))
+
+        // Botón de registro
         TextButton(onClick = onRegisterClick) {
             Text("¿No tienes cuenta? Regístrate")
         }

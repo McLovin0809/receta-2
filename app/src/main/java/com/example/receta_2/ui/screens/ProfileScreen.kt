@@ -30,9 +30,6 @@ fun ProfileScreen(
                 text = "Información del Usuario",
                 style = MaterialTheme.typography.titleLarge
             )
-
-            // Puedes añadir más información del perfil aquí
-
             Button(onClick = onSettingsClick, modifier = Modifier.fillMaxWidth()) {
                 Text("Configuración")
             }

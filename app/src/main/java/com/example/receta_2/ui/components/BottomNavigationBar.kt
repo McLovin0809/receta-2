@@ -13,7 +13,7 @@ import com.example.receta_2.navigation.AppScreen
 @Composable
 fun AppBottomBar(
     navController: NavController,
-    isLoggedIn: Boolean // Parámetro clave para decidir qué mostrar
+    isLoggedIn: Boolean
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -26,19 +26,16 @@ fun AppBottomBar(
             selected = currentRoute == AppScreen.Home.route,
             onClick = {
                 navController.navigate(AppScreen.Home.route) {
-                    // Limpia la pila hasta el inicio para no acumular pantallas Home
                     popUpTo(navController.graph.startDestinationId) {
                         saveState = true
                     }
-                    // Evita múltiples copias de Home
+
                     launchSingleTop = true
-                    // Restaura el estado si se vuelve a la pantalla
                     restoreState = true
                 }
             }
         )
 
-        // --- Ítem 2: Login o Perfil (condicional) ---
         val destination = if (isLoggedIn) AppScreen.Profile.route else AppScreen.Login.route
         val label = if (isLoggedIn) "Perfil" else "Login"
         val selected = currentRoute == destination

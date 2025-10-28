@@ -54,15 +54,14 @@ fun FavoritesScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(favoriteRecipes, key = { it.id }) { recipe ->
-                    // ✅ 2. AHORA PUEDE USAR RecipeItemCard PORQUE ESTÁ EN SU PROPIO ARCHIVO
                     RecipeItemCard(
                         recipe = recipe,
-                        isFavorite = true, // En esta pantalla, todas son favoritas
+                        isFavorite = true,
                         onToggleFavorite = { favoritesViewModel.toggleFavorite(recipe.id) },
                         onDetailsClick = {
                             navController.navigate("recipe_detail/${recipe.id}")
                         },
-                        isLoggedIn = true // Si estamos en esta pantalla, el usuario está logueado
+                        isLoggedIn = true
                     )
                 }
             }

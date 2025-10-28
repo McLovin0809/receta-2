@@ -9,12 +9,9 @@ import kotlinx.coroutines.flow.update
 
 class FavoritesViewModel : ViewModel() {
 
-    // Un StateFlow para mantener la lista de IDs de recetas favoritas.
-    // Usamos StateFlow para que la UI pueda reaccionar a los cambios.
     private val _favoriteRecipeIds = MutableStateFlow<Set<String>>(emptySet())
     val favoriteRecipeIds = _favoriteRecipeIds.asStateFlow()
 
-    // Un StateFlow que deriva la lista completa de objetos Recipe favoritos.
     private val _favoriteRecipes = MutableStateFlow<List<Recipe>>(emptyList())
     val favoriteRecipes = _favoriteRecipes.asStateFlow()
 
@@ -32,7 +29,6 @@ class FavoritesViewModel : ViewModel() {
             }
             newIds
         }
-        // Actualizamos la lista de recetas completas cada vez que cambia un ID
         updateFavoriteRecipes()
     }
 

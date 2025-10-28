@@ -68,4 +68,3 @@ fun RecipeListScreen(
     }
 }
 
-// LA DEFINICIÓN DE RecipeItemCard SE HA ELIMINADO DE AQUÍ

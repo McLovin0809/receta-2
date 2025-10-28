@@ -20,12 +20,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.receta_2.data.model.Recipe
 
-// El composable principal para la pantalla de detalle
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeDetailScreen(
     navController: NavController,
-    recipe: Recipe // Recibe el objeto Recipe completo
+    recipe: Recipe
 ) {
     Scaffold(
         topBar = {
@@ -39,14 +38,12 @@ fun RecipeDetailScreen(
             )
         }
     ) { paddingValues ->
-        // Hacemos que toda la pantalla sea "scrolleable"
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            // Imagen principal de la receta
             Image(
                 painter = painterResource(id = recipe.image),
                 contentDescription = recipe.name,
@@ -55,8 +52,6 @@ fun RecipeDetailScreen(
                     .height(250.dp),
                 contentScale = ContentScale.Crop
             )
-
-            // Contenido de la receta (título, descripción, etc.)
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
@@ -73,7 +68,6 @@ fun RecipeDetailScreen(
 
                 Divider(modifier = Modifier.padding(vertical = 24.dp))
 
-                // --- Sección de Ingredientes ---
                 Text(
                     text = "Ingredientes",
                     style = MaterialTheme.typography.headlineSmall,
@@ -88,7 +82,6 @@ fun RecipeDetailScreen(
 
                 Divider(modifier = Modifier.padding(vertical = 24.dp))
 
-                // --- Sección de Pasos ---
                 Text(
                     text = "Preparación",
                     style = MaterialTheme.typography.headlineSmall,
@@ -105,11 +98,9 @@ fun RecipeDetailScreen(
     }
 }
 
-// Composable para un solo ítem de la lista de ingredientes
 @Composable
 fun IngredientItem(text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        // Un punto visual para la viñeta
         Box(
             modifier = Modifier
                 .size(8.dp)
@@ -123,11 +114,9 @@ fun IngredientItem(text: String) {
     }
 }
 
-// Composable para un solo paso de la preparación, con numeración
 @Composable
 fun StepItem(stepNumber: Int, stepText: String) {
     Row(verticalAlignment = Alignment.Top) {
-        // Número del paso
         Text(
             text = "$stepNumber.",
             style = MaterialTheme.typography.titleLarge,
@@ -137,11 +126,10 @@ fun StepItem(stepNumber: Int, stepText: String) {
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        // Descripción del paso
         Text(
             text = stepText,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(top = 2.dp) // Alineación fina
+            modifier = Modifier.padding(top = 2.dp)
         )
     }
 }

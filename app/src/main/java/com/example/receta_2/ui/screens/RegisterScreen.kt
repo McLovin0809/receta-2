@@ -24,11 +24,8 @@ fun RegisterScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-
     var isEmailValid by remember { mutableStateOf(true) }
     var doPasswordsMatch by remember { mutableStateOf(true) }
-
-    // Validación del formulario
     val isFormValid by remember(username, email, password, confirmPassword) {
         derivedStateOf {
             isEmailValid = Patterns.EMAIL_ADDRESS.matcher(email).matches()

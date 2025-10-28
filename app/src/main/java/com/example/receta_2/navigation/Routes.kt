@@ -5,4 +5,3 @@ object Routes {
     const val PROFILE = "profile"
     // Add other routes here as your app grows
 }
-    

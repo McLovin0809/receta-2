@@ -11,20 +11,17 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.receta_2.navigation.AppScreen
 
-// Renombramos la función para que sea más genérica
 @Composable
 fun AppBottomBar(
     navController: NavController,
-    isLoggedIn: Boolean // El parámetro clave que controla todo
+    isLoggedIn: Boolean
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     NavigationBar {
         if (isLoggedIn) {
-            // --- BARRA PARA USUARIOS LOGUEADOS ---
 
-            // Ítem 1: Home
             NavigationBarItem(
                 icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
                 label = { Text("Home") },
@@ -39,9 +36,7 @@ fun AppBottomBar(
 
 
         } else {
-            // --- BARRA PARA USUARIOS NO LOGUEADOS ---
 
-            // Ítem 1: Home
             NavigationBarItem(
                 icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
                 label = { Text("Home") },
@@ -54,7 +49,6 @@ fun AppBottomBar(
                 }
             )
 
-            // Ítem 2: Login
             NavigationBarItem(
                 icon = { Icon(Icons.Filled.LockOpen, contentDescription = "Login") },
                 label = { Text("Login") },

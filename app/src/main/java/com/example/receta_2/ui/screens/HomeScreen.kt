@@ -8,7 +8,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
@@ -23,16 +25,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.receta_2.data.model.CategoryGroup
 import com.example.receta_2.data.model.SearchCategory
 import com.example.receta_2.data.model.allCategories
 import com.example.receta_2.navigation.ExtraRoutes
-import com.example.receta_2.ui.theme.Receta2Theme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,15 +58,9 @@ fun HomeScreen(
                 }
             )
         },
-
         floatingActionButton = {
             if (isLoggedIn) {
-                FloatingActionButton(
-                    onClick = {
-                        navController.navigate(ExtraRoutes.ADD_RECIPE)
-                    },
-                    modifier = Modifier.padding(bottom = 16.dp)
-                ) {
+                FloatingActionButton(onClick = { navController.navigate(ExtraRoutes.ADD_RECIPE) }, modifier = Modifier.padding(bottom = 16.dp)) {
                     Icon(Icons.Default.Add, contentDescription = "Añadir Receta")
                 }
             }
@@ -79,11 +71,11 @@ fun HomeScreen(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
                 placeholder = { Text("Ej: Pastas, Airfryer, Tapas…") },
-                leadingIcon = { Icon(Icons.Default.Search, "Buscar") },
+                leadingIcon = { Icon(Icons.Default.Person, "Buscar") },
                 trailingIcon = {
                     if (searchQuery.isNotEmpty()) {
                         IconButton(onClick = { searchQuery = "" }) {
-                            Icon(Icons.Default.Clear, contentDescription = "Limpiar búsqueda")
+                            Icon(Icons.Default.Person, contentDescription = "Limpiar búsqueda")
                         }
                     }
                 },
@@ -132,11 +124,7 @@ fun CategoryTabs(navController: NavController, searchQuery: String) {
 
         if (categoriesToShow.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize().padding(16.dp), contentAlignment = Alignment.Center) {
-                Text(
-                    "No se encontraron categorías para \"$searchQuery\"",
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center
-                )
+                Text("No se encontraron categorías para \"$searchQuery\"", style = MaterialTheme.typography.bodyLarge, textAlign = TextAlign.Center)
             }
         } else {
             LazyVerticalGrid(
@@ -149,8 +137,8 @@ fun CategoryTabs(navController: NavController, searchQuery: String) {
                 items(categoriesToShow, key = { it.id }) { subCategory ->
                     CategoryCard(
                         category = subCategory,
-                        onCategoryClick = {
-                            navController.navigate("recipe_list/${it.id}/${it.name}")
+                        onCategoryClick = { category ->
+                            navController.navigate("recipe_list/${category.id}/${category.name}")
                         }
                     )
                 }
@@ -169,9 +157,7 @@ fun CategoryCard(category: SearchCategory, onCategoryClick: (SearchCategory) -> 
             Text(
                 text = "${category.recipeCount}",
                 modifier = Modifier.align(Alignment.TopEnd).padding(8.dp).background(MaterialTheme.colorScheme.primary.copy(alpha = 0.8f), RoundedCornerShape(50)).padding(horizontal = 8.dp, vertical = 2.dp),
-                color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold
+                color = MaterialTheme.colorScheme.onPrimary
             )
             Text(
                 text = category.name,
@@ -181,13 +167,5 @@ fun CategoryCard(category: SearchCategory, onCategoryClick: (SearchCategory) -> 
                 color = Color.White
             )
         }
-    }
-}
-
-@Preview(showBackground = true, name = "HomeScreen Logged In")
-@Composable
-fun HomeScreenLoggedInPreview() {
-    Receta2Theme {
-        HomeScreen(isLoggedIn = true, onProfileClick = {}, onFavoritesClick = {}, navController = rememberNavController())
     }
 }

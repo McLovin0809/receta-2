@@ -10,7 +10,6 @@ data class SearchCategory(
     val group: CategoryGroup
 )
 
-
 data class Recipe(
     val id: String,
     val name: String,
@@ -20,4 +19,3 @@ data class Recipe(
     val ingredients: List<String>,
     val steps: List<String>
 )
-

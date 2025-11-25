@@ -1,21 +1,20 @@
 package com.example.receta_2.ui.screens
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.receta_2.ui.components.RecipeItemCard
-import com.example.receta_2.data.model.sampleRecipes
 import com.example.receta_2.viewmodel.FavoritesViewModel
+import com.example.receta_2.viewmodel.RecipeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,10 +23,12 @@ fun RecipeListScreen(
     categoryId: String?,
     categoryName: String?,
     favoritesViewModel: FavoritesViewModel,
+    recipeViewModel: RecipeViewModel,
     isLoggedIn: Boolean
 ) {
-    val recipesToShow = sampleRecipes.filter { it.categoryIds.contains(categoryId) }
+    val recipes by recipeViewModel.recipes.collectAsState()
     val favoriteIds by favoritesViewModel.favoriteRecipeIds.collectAsState()
+    val recipesToShow = recipes.filter { it.categoryIds.contains(categoryId) }
 
     Scaffold(
         topBar = {
@@ -42,17 +43,11 @@ fun RecipeListScreen(
         }
     ) { paddingValues ->
         if (recipesToShow.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize().padding(paddingValues),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("Aún no hay recetas en esta categoría.")
-            }
+            Text("Aún no hay recetas en esta categoría.", modifier = Modifier.padding(paddingValues).padding(16.dp))
         } else {
             LazyColumn(
                 modifier = Modifier.padding(paddingValues),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                contentPadding = PaddingValues(16.dp)
             ) {
                 items(recipesToShow, key = { it.id }) { recipe ->
                     RecipeItemCard(
@@ -62,9 +57,9 @@ fun RecipeListScreen(
                         onDetailsClick = { navController.navigate("recipe_detail/${recipe.id}") },
                         isLoggedIn = isLoggedIn
                     )
+                    Spacer(Modifier.padding(8.dp))
                 }
             }
         }
     }
 }
-

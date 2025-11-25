@@ -13,18 +13,12 @@ import androidx.compose.ui.Modifier
 @Composable
 fun SettingsScreen() {
     Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Configuración") })
-        }
+        topBar = { TopAppBar(title = { Text("Configuración") }) }
     ) { padding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
+            modifier = Modifier.fillMaxSize().padding(padding),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = "Pantalla de Configuración")
-        }
+        ) { Text(text = "Pantalla de Configuración") }
     }
 }

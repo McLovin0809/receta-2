@@ -15,26 +15,14 @@ class FavoritesViewModel : ViewModel() {
     private val _favoriteRecipes = MutableStateFlow<List<Recipe>>(emptyList())
     val favoriteRecipes = _favoriteRecipes.asStateFlow()
 
-    fun isFavorite(recipeId: String): Boolean {
-        return _favoriteRecipeIds.value.contains(recipeId)
-    }
+    fun isFavorite(recipeId: String): Boolean = _favoriteRecipeIds.value.contains(recipeId)
 
     fun toggleFavorite(recipeId: String) {
-        _favoriteRecipeIds.update { currentIds ->
-            val newIds = currentIds.toMutableSet()
-            if (newIds.contains(recipeId)) {
-                newIds.remove(recipeId)
-            } else {
-                newIds.add(recipeId)
+        _favoriteRecipeIds.update { ids ->
+            ids.toMutableSet().apply {
+                if (!add(recipeId)) remove(recipeId)
             }
-            newIds
         }
-        updateFavoriteRecipes()
-    }
-
-    private fun updateFavoriteRecipes() {
-        _favoriteRecipes.value = sampleRecipes.filter {
-            _favoriteRecipeIds.value.contains(it.id)
-        }
+        _favoriteRecipes.value = sampleRecipes.filter { _favoriteRecipeIds.value.contains(it.id) }
     }
 }

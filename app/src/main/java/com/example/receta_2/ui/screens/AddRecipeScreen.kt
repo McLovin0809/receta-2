@@ -45,21 +45,24 @@ fun AddRecipeScreen(
     var imageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
 
     val context = LocalContext.current
-    val imagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
+    val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         imageUri = uri
     }
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            imagePickerLauncher.launch("image/*")
-        }
+    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        if (isGranted) imagePickerLauncher.launch("image/*")
     }
 
-    val isFormValid = name.isNotBlank() && description.isNotBlank() &&
-            ingredients.isNotBlank() && steps.isNotBlank() && imageUri != null
+    val permission = if (android.os.Build.VERSION.SDK_INT >= 33) {
+        Manifest.permission.READ_MEDIA_IMAGES
+    } else {
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    }
+
+    val isFormValid by remember {
+        derivedStateOf {
+            name.isNotBlank() && description.isNotBlank() && ingredients.isNotBlank() && steps.isNotBlank() && imageUri != null
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -90,24 +93,15 @@ fun AddRecipeScreen(
                     }
                 },
                 containerColor = if (isFormValid) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
-            ) {
-                Icon(Icons.Default.Check, contentDescription = "Guardar Receta")
-            }
+            ) { Icon(Icons.Default.Check, contentDescription = "Guardar Receta") }
         }
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp).verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                "Completa los datos de tu receta",
-                style = MaterialTheme.typography.titleMedium
-            )
+            Text("Completa los datos de tu receta", style = MaterialTheme.typography.titleMedium)
 
             Box(
                 modifier = Modifier
@@ -116,77 +110,34 @@ fun AddRecipeScreen(
                     .clip(RoundedCornerShape(12.dp))
                     .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
                     .clickable {
-                        val permissionStatus = ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.READ_MEDIA_IMAGES
-                        )
+                        val permissionStatus = ContextCompat.checkSelfPermission(context, permission)
                         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
                             imagePickerLauncher.launch("image/*")
                         } else {
-                            permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                            permissionLauncher.launch(permission)
                         }
                     },
                 contentAlignment = Alignment.Center
             ) {
                 if (imageUri == null) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Icon(
-                            Icons.Default.PhotoCamera,
-                            contentDescription = "Seleccionar imagen",
-                            modifier = Modifier.size(48.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Icon(Icons.Default.PhotoCamera, contentDescription = "Seleccionar imagen", modifier = Modifier.size(48.dp))
                         Text("Toca para seleccionar una imagen", style = MaterialTheme.typography.bodyLarge)
                     }
                 } else {
                     AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(imageUri)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = "Imagen de la receta seleccionada",
+                        model = ImageRequest.Builder(LocalContext.current).data(imageUri).crossfade(true).build(),
+                        contentDescription = "Imagen seleccionada",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
                 }
             }
 
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Nombre de la receta") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-
-            OutlinedTextField(
-                value = description,
-                onValueChange = { description = it },
-                label = { Text("Descripción corta") },
-                modifier = Modifier.fillMaxWidth(),
-                maxLines = 3
-            )
-
-            OutlinedTextField(
-                value = ingredients,
-                onValueChange = { ingredients = it },
-                label = { Text("Ingredientes (uno por línea)") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-            )
-
-            OutlinedTextField(
-                value = steps,
-                onValueChange = { steps = it },
-                label = { Text("Pasos de preparación (uno por línea)") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-            )
+            OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Nombre de la receta") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+            OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text("Descripción corta") }, modifier = Modifier.fillMaxWidth(), maxLines = 3)
+            OutlinedTextField(value = ingredients, onValueChange = { ingredients = it }, label = { Text("Ingredientes (uno por línea)") }, modifier = Modifier.fillMaxWidth().height(150.dp))
+            OutlinedTextField(value = steps, onValueChange = { steps = it }, label = { Text("Pasos de preparación (uno por línea)") }, modifier = Modifier.fillMaxWidth().height(200.dp))
         }
     }
 }

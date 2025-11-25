@@ -14,33 +14,20 @@ fun ProfileScreen(
     onLogoutClick: () -> Unit
 ) {
     Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Mi Perfil") })
-        }
+        topBar = { TopAppBar(title = { Text("Mi Perfil") }) }
     ) { padding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "Información del Usuario",
-                style = MaterialTheme.typography.titleLarge
-            )
-            Button(onClick = onSettingsClick, modifier = Modifier.fillMaxWidth()) {
-                Text("Configuración")
-            }
-
+            Text("Información del Usuario", style = MaterialTheme.typography.titleLarge)
+            Button(onClick = onSettingsClick, modifier = Modifier.fillMaxWidth()) { Text("Configuración") }
             Button(
                 onClick = onLogoutClick,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-            ) {
-                Text("Cerrar Sesión")
-            }
+            ) { Text("Cerrar Sesión") }
         }
     }
 }

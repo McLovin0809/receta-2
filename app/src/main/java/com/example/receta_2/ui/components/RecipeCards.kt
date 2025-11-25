@@ -1,26 +1,17 @@
 package com.example.receta_2.ui.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.receta_2.data.model.Recipe
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeItemCard(
     recipe: Recipe,
@@ -29,62 +20,33 @@ fun RecipeItemCard(
     onDetailsClick: () -> Unit,
     isLoggedIn: Boolean
 ) {
-    val context = LocalContext.current
-    val image = context.resources.getIdentifier(
-        recipe.image,
-        "drawable",
-        context.packageName
-    )
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        onClick = onDetailsClick
-    ) {
+    Card(onClick = onDetailsClick) {
         Column {
-            Box {
-                Image(
-                    painter = painterResource(id = image),
-                    contentDescription = recipe.name,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp),
-                    contentScale = ContentScale.Crop
-                )
-                if (isLoggedIn) {
-                    IconButton(
-                        onClick = {
-                            onToggleFavorite()
-                        },
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(8.dp)
-                            .background(Color.Black.copy(alpha = 0.4f), shape = CircleShape)
-                    ) {
-                        Icon(
-                            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                            contentDescription = "Marcar como favorito",
-                            tint = if (isFavorite) MaterialTheme.colorScheme.primary else Color.White
-                        )
+            AsyncImage(
+                model = recipe.image,
+                contentDescription = recipe.name,
+                modifier = Modifier.fillMaxWidth().height(160.dp),
+                contentScale = ContentScale.Crop
+            )
+            Row(
+                modifier = Modifier.padding(12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(recipe.name, style = MaterialTheme.typography.titleMedium)
+                IconButton(onClick = { if (isLoggedIn) onToggleFavorite() }) {
+                    if (isFavorite) {
+                        Icon(Icons.Filled.Favorite, contentDescription = "Quitar de favoritos", tint = MaterialTheme.colorScheme.primary)
+                    } else {
+                        Icon(Icons.Outlined.FavoriteBorder, contentDescription = "Agregar a favoritos")
                     }
                 }
             }
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(recipe.name, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    recipe.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = onDetailsClick,
-                    modifier = Modifier.align(Alignment.End)
-                ) {
-                    Text("Mostrar Detalles")
-                }
-            }
+            // The corrected line is below
+            Text(
+                recipe.description,
+                modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }

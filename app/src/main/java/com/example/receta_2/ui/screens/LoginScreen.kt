@@ -19,19 +19,15 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    var isEmailValid by remember { mutableStateOf(true) }
-    var isPasswordValid by remember { mutableStateOf(true) }
-
     val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
-
     val passwordRegex = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@#\$%^&+=!]{6,}$")
 
+    val isEmailValid = emailRegex.matches(email)
+    val isPasswordValid = passwordRegex.matches(password)
     val isFormValid = email.isNotBlank() && password.isNotBlank() && isEmailValid && isPasswordValid
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
+        modifier = Modifier.fillMaxSize().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -40,62 +36,40 @@ fun LoginScreen(
 
         OutlinedTextField(
             value = email,
-            onValueChange = {
-                email = it
-                isEmailValid = emailRegex.matches(it)
-            },
+            onValueChange = { email = it },
             label = { Text("Correo Electrónico") },
             leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
-            isError = !isEmailValid && email.isNotEmpty(),
+            isError = email.isNotEmpty() && !isEmailValid,
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
         if (!isEmailValid && email.isNotEmpty()) {
-            Text(
-                "Correo inválido. Usa un formato como usuario@dominio.cl",
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
-            )
+            Text("Correo inválido. Usa formato usuario@dominio.cl", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
         }
 
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
             value = password,
-            onValueChange = {
-                password = it
-                isPasswordValid = passwordRegex.matches(it)
-            },
+            onValueChange = { password = it },
             label = { Text("Contraseña") },
             leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
             visualTransformation = PasswordVisualTransformation(),
-            isError = !isPasswordValid && password.isNotEmpty(),
+            isError = password.isNotEmpty() && !isPasswordValid,
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
         if (!isPasswordValid && password.isNotEmpty()) {
-            Text(
-                "Debe tener al menos 6 caracteres, incluir letras y números.",
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
-            )
+            Text("Debe tener al menos 6 caracteres, incluir letras y números.", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
         }
 
         Spacer(Modifier.height(32.dp))
 
-        Button(
-            onClick = onLoginSuccess,
-            enabled = isFormValid,
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Button(onClick = onLoginSuccess, enabled = isFormValid, modifier = Modifier.fillMaxWidth()) {
             Text("Entrar")
         }
 
         Spacer(Modifier.height(16.dp))
-
-        // Botón de registro
-        TextButton(onClick = onRegisterClick) {
-            Text("¿No tienes cuenta? Regístrate")
-        }
+        TextButton(onClick = onRegisterClick) { Text("¿No tienes cuenta? Regístrate") }
     }
 }

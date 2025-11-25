@@ -7,11 +7,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.receta_2.data.dao.RecipeDao
-import com.example.receta_2.data.model.Recipe
-import com.example.receta_2.data.model.SearchCategory
 import com.example.receta_2.data.model.CategoryEntity
 import com.example.receta_2.data.model.DatabaseConverters
+import com.example.receta_2.data.model.Recipe
 import com.example.receta_2.data.model.RecipeEntity
+import com.example.receta_2.data.model.SearchCategory
+import com.example.receta_2.data.model.toEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,6 +50,7 @@ abstract class AppDatabase : RoomDatabase() {
         private val initialRecipes: List<Recipe>,
         private val initialCategories: List<SearchCategory>
     ) : RoomDatabase.Callback() {
+
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
             INSTANCE?.let { database ->
@@ -59,14 +61,22 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         suspend fun populateDatabase(recipeDao: RecipeDao) {
+            recipeDao.deleteAllCategories()
+            recipeDao.deleteAllRecipes()
+
+
             val categoryEntities = initialCategories.map { category ->
-                CategoryEntity(category.id, category.name, category.image, category.recipeCount, category.group)
+                CategoryEntity(
+                    id = category.id,
+                    name = category.name,
+                    image = category.image,
+                    recipeCount = category.recipeCount,
+                    group = category.group
+                )
             }
             recipeDao.insertAllCategories(categoryEntities)
 
-            val recipeEntities = initialRecipes.map { recipe ->
-                RecipeEntity(recipe.id, recipe.name, recipe.description, recipe.image, recipe.categoryIds, recipe.ingredients, recipe.steps)
-            }
+            val recipeEntities = initialRecipes.map { it.toEntity() }
             recipeDao.insertAllRecipes(recipeEntities)
         }
     }

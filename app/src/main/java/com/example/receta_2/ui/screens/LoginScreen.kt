@@ -22,11 +22,9 @@ fun LoginScreen(
     var isEmailValid by remember { mutableStateOf(true) }
     var isPasswordValid by remember { mutableStateOf(true) }
 
-    // Regex personalizada para validar correo electrónico
     val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
 
-    // Regex para contraseña segura: mínimo 8 caracteres, al menos una letra y un número
-    val passwordRegex = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@#\$%^&+=!]{8,}$")
+    val passwordRegex = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@#\$%^&+=!]{6,}$")
 
     val isFormValid = email.isNotBlank() && password.isNotBlank() && isEmailValid && isPasswordValid
 
@@ -40,7 +38,6 @@ fun LoginScreen(
         Text("Iniciar Sesión", style = MaterialTheme.typography.headlineLarge)
         Spacer(Modifier.height(32.dp))
 
-        // Campo de correo electrónico
         OutlinedTextField(
             value = email,
             onValueChange = {
@@ -63,7 +60,6 @@ fun LoginScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // Campo de contraseña
         OutlinedTextField(
             value = password,
             onValueChange = {
@@ -79,7 +75,7 @@ fun LoginScreen(
         )
         if (!isPasswordValid && password.isNotEmpty()) {
             Text(
-                "Debe tener al menos 8 caracteres, incluir letras y números.",
+                "Debe tener al menos 6 caracteres, incluir letras y números.",
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall
             )
@@ -87,7 +83,6 @@ fun LoginScreen(
 
         Spacer(Modifier.height(32.dp))
 
-        // Botón de login
         Button(
             onClick = onLoginSuccess,
             enabled = isFormValid,

@@ -11,8 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
-// ✅ 1. SE ELIMINA LA IMPORTACIÓN PROBLEMÁTICA
-// import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -33,6 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.receta_2.data.model.CategoryGroup
 import com.example.receta_2.data.model.SearchCategory
 import com.example.receta_2.data.model.allCategories
+import com.example.receta_2.navigation.ExtraRoutes
 import com.example.receta_2.ui.theme.Receta2Theme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,6 +59,19 @@ fun HomeScreen(
                     }
                 }
             )
+        },
+
+        floatingActionButton = {
+            if (isLoggedIn) {
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate(ExtraRoutes.ADD_RECIPE)
+                    },
+                    modifier = Modifier.padding(bottom = 16.dp)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Añadir Receta")
+                }
+            }
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
@@ -96,7 +108,7 @@ fun CategoryTabs(navController: NavController, searchQuery: String) {
                 edgePadding = 16.dp,
                 indicator = { tabPositions ->
                     TabRowDefaults.Indicator(
-                        Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]), // ✅ Ahora funciona
+                        Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
                         height = 3.dp,
                         color = MaterialTheme.colorScheme.primary
                     )

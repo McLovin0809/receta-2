@@ -1,6 +1,10 @@
 package com.example.receta_2.ui.screens
 
-import androidx.compose.foundation.Image
+// Importaciones necesarias para la solución
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -44,14 +47,20 @@ fun RecipeDetailScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            Image(
-                painter = painterResource(id = recipe.image),
+
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(recipe.image)
+                    .crossfade(true)
+                    .build(),
                 contentDescription = recipe.name,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(250.dp),
                 contentScale = ContentScale.Crop
             )
+            // --- FIN DE LA CORRECCIÓN ---
+
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
@@ -133,3 +142,4 @@ fun StepItem(stepNumber: Int, stepText: String) {
         )
     }
 }
+

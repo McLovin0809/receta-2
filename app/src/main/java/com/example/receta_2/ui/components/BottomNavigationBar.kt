@@ -19,7 +19,6 @@ fun AppBottomBar(
     val currentRoute = navBackStackEntry?.destination?.route
 
     NavigationBar {
-        // --- Ítem 1: Home (siempre visible) ---
         NavigationBarItem(
             icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
             label = { Text("Home") },

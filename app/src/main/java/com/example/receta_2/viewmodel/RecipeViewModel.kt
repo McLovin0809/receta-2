@@ -1,4 +1,4 @@
-package com.example.receta_2.ui.viewmodel
+package com.example.receta_2.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.receta_2.data.AppDatabase
 import com.example.receta_2.data.model.Recipe
 import com.example.receta_2.data.model.SearchCategory
-import com.example.receta_2.data.model.allCategories // Importa los datos iniciales
-import com.example.receta_2.data.model.sampleRecipes   // Importa los datos iniciales
+import com.example.receta_2.data.model.allCategories
+import com.example.receta_2.data.model.sampleRecipes
 import com.example.receta_2.repository.RecipeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +20,6 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
     private val _recipes = MutableStateFlow<List<Recipe>>(emptyList())
     val recipes = _recipes.asStateFlow()
 
-    // Para la lista de todas las categorías
     private val _categories = MutableStateFlow<List<SearchCategory>>(emptyList())
     val categories = _categories.asStateFlow()
 
@@ -55,6 +54,14 @@ class RecipeViewModel(application: Application) : AndroidViewModel(application) 
         _currentRecipe.value = null
         viewModelScope.launch {
             _currentRecipe.value = repository.getRecipeById(id)
+        }
+    }
+
+
+    fun addRecipe(newRecipe: Recipe) {
+        viewModelScope.launch {
+            repository.insertRecipe(newRecipe)
+            loadAllRecipes()
         }
     }
 }
